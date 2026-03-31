@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Registry.API/Registry.API.csproj" />
+  <Project Path="Registry.Application/Registry.Application.csproj" />
+  <Project Path="Registry.Core/Registry.Core.csproj" />
+  <Project Path="Registry.Infrastructure/Registry.Infrastructure.csproj" />
+</Solution>
