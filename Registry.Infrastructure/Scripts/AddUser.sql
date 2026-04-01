@@ -8,10 +8,10 @@ GO
 -- Description:	Creating a new User
 -- =============================================
 CREATE PROCEDURE AddUser
-	@Id int,
+	@Id nchar(13),
 	@FirstName nchar(50),
 	@LastName nchar(50),
-	@Email nvarchar(MAX),
+	@Email nvarchar(50),
 	@Phone nchar(10),
 	@StreetAddress nchar(50),
 	@Suburb nchar(50),

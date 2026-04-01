@@ -9,10 +9,10 @@ GO
 --				information
 -- =============================================
 CREATE PROCEDURE UpdateUser
-	@Id int,
+	@Id nchar(50),
 	@FirstName nchar(50),
 	@LastName nchar(50),
-	@Email nvarchar(MAX),
+	@Email nvarchar(50),
 	@Phone nchar(10),
 	@StreetAddress nchar(50),
 	@Suburb nchar(50),
