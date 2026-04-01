@@ -5,14 +5,13 @@ GO
 -- =============================================
 -- Author:		Tanush Naiker
 -- Create date: 30/03/2026
--- Description:	Updating a specific user's 
---				information
+-- Description:	Creating a new User
 -- =============================================
-CREATE PROCEDURE UpdateUser
-	@Id int,
+CREATE PROCEDURE AddUser
+	@Id nchar(13),
 	@FirstName nchar(50),
 	@LastName nchar(50),
-	@Email nvarchar(MAX),
+	@Email nvarchar(50),
 	@Phone nchar(10),
 	@StreetAddress nchar(50),
 	@Suburb nchar(50),
@@ -20,15 +19,7 @@ CREATE PROCEDURE UpdateUser
 	@Province nchar(50)
 AS
 BEGIN
-	UPDATE [dbo].[Users]
-	SET firstName = @FirstName,
-		lastName = @LastName,
-		email = @Email,
-		phone = @Phone,
-		streetAddress = @StreetAddress,
-		suburb = @Suburb,
-		city = @City,
-		province = @Province
-	WHERE id = @Id
+	INSERT INTO [dbo].[Users](id, firstName, lastName, email, phone, streetAddress, suburb, city, province) 
+	VALUES (@Id, @FirstName, @LastName, @Email, @Phone, @StreetAddress, @Suburb, @City, @Province)
 END
 GO
