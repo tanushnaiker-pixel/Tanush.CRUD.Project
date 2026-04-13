@@ -9,7 +9,7 @@ GO
 --				information
 -- =============================================
 CREATE PROCEDURE  GetUser
-	@Id int
+	@Id nchar(13)
 AS
 BEGIN
 	SELECT *

@@ -1,0 +1,61 @@
+﻿using Microsoft.IdentityModel.Protocols.Configuration;
+using Registry.Core.Entities;
+using Registry.Infrastructure.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Dapper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
+
+namespace Registry.Infrastructure.Implementation
+{
+    public class RegistryRepository : IRegistryRepository
+    {
+        private readonly IConfiguration _configuration;
+
+        public RegistryRepository(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public async Task AddUserAsync(RegistrationInformation registrationInformation)
+        {
+            using var connection = GetConnection();
+            await connection.ExecuteAsync("INSERT INTO Users (id, firstName, lastName, email, phone, streetAddress, suburb, city, province) VALUES (@Id, @FirstName, @LastName, @Email, @Phone, @StreetAddress, @Suburb, @City, @Province)", registrationInformation);
+        }
+
+        public async Task DeleteUserAsync(string id)
+        {
+            using var connection = GetConnection();
+            await connection.ExecuteAsync("DELETE FROM Users WHERE id = @Id", new { Id = id });
+        }
+
+        public async Task<List<RegistrationInformation>> GetAllAsync()
+        {
+            using var connection = GetConnection();
+            var result = await connection.QueryAsync<RegistrationInformation>("SELECT * FROM Users");
+            return result.ToList();
+        }
+
+        public async Task<RegistrationInformation> GetUserAsync(string id)
+        {
+            using var connection = GetConnection();
+            var result = await connection.QueryFirstOrDefaultAsync<RegistrationInformation>("SELECT * FROM Users WHERE id = @Id", new { Id = id });
+            return result;
+        }
+
+        public async Task UpdateUserAsync(RegistrationInformation registrationInformation)
+        {
+            using var connection = GetConnection();
+            await connection.ExecuteAsync("UPDATE Users SET firstName = @FirstName, lastName = @LastName, email = @Email, phone = @Phone, streetAddress = @StreetAddress, suburb = @Suburb, city = @City, province = @Province WHERE id = @Id", registrationInformation);
+        }
+
+        private SqlConnection GetConnection()
+        {
+            return new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        }
+    }
+}

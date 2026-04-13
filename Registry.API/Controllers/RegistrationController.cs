@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Registry.Core.Entities;
+using Registry.Infrastructure.Implementation;
+using Registry.Infrastructure.Interfaces;
 
 namespace Registry.API.Controllers
 {
@@ -7,92 +9,69 @@ namespace Registry.API.Controllers
     [Route("[controller]")]
     public class RegistrationController : ControllerBase
     {
-        private readonly ILogger<RegistrationController> _logger;
+        private readonly IRegistryRepository _registryRepository;
 
-        public RegistrationController(ILogger<RegistrationController> logger)
+        public RegistrationController(IRegistryRepository registryRepository)
         {
-            _logger = logger;
+            _registryRepository = registryRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllUsers()
+        public async Task<ActionResult<List<RegistrationInformation>>> GetAllAsync()
         {
-
-            return Ok(await _context.RegistrationInformation.ToArrayAsync()); //Need to change DB to local server
+            var result = await _registryRepository.GetAllAsync();
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetUser(int id)
+        public async Task<ActionResult<RegistrationInformation>> GetUserAsync(string id)
         {
-            var user = await _context.RegistrationInformation.FindAsync(id);//Need to change DB to local server
-            if (user == null)
+            var result = await _registryRepository.GetUserAsync(id);
+            if(result == null)
             {
-                return NotFound();
+                return NotFound("No user found with the given ID.");
             }
-            return Ok(user);
+            return Ok(result);
+
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostUser(RegistrationInformation user) //Need to create Class
+        public async Task<ActionResult> AddUserAsync(RegistrationInformation registrationInformation)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-
-            _context.RegistrationInformation.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(
-                nameof(GetUser),
-                new { id = user.Id },
-                user);
+            await _registryRepository.AddUserAsync(registrationInformation);
+            return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutUser(string id, RegistrationInformation user)//Need to create Class
+        public async Task<ActionResult> UpdateUserAsync(string id, RegistrationInformation registrationInformation)
         {
-            if (id != user.Id)
+            var existingUser = await _registryRepository.GetUserAsync(id);
+            if (existingUser == null)
             {
-                return BadRequest();
+                return NotFound("User not found.");
             }
-
-            _context.Entry(user).State = EntityState.Modified;// Not using entity framework
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)// Not using entity framework
-            {
-                if (!_context.RegistrationInformation.Any(p => p.Id == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            registrationInformation.Id = id;
+            await _registryRepository.UpdateUserAsync(registrationInformation);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUser(string id)
+        public async Task<ActionResult> DeleteUserAsync(string id)
         {
-            var user = await _context.RegistrationInformation.FindAsync(id);
-            if (user == null)
+            var existingUser = await _registryRepository.GetUserAsync(id);
+            if (existingUser == null)
             {
-                return NotFound();
+                return NotFound("User not found.");
             }
-
-            _context.RegistrationInformation.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
+            await _registryRepository.DeleteUserAsync(id);
+            return NoContent();
         }
+
+        //private readonly ILogger<RegistrationController> _logger;
+
+        //public RegistrationController(ILogger<RegistrationController> logger)
+        //{
+        //    _logger = logger;
+        //}
     }
 }

@@ -8,7 +8,7 @@ GO
 -- Description:	Deleting a User from the database
 -- =============================================
 CREATE PROCEDURE DeleteUser
-	@Id int
+	@Id nchar(13)
 AS
 BEGIN
 	DELETE
