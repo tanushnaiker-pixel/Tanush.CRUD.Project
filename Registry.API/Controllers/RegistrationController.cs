@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Registry.Core.Entities;
+using Registry.Infrastructure.Interfaces;
 
 namespace Registry.API.Controllers
 {
@@ -8,23 +9,25 @@ namespace Registry.API.Controllers
     public class RegistrationController : ControllerBase
     {
         private readonly ILogger<RegistrationController> _logger;
+        private readonly IRegistryRepository _repo;
 
-        public RegistrationController(ILogger<RegistrationController> logger)
+        public RegistrationController(ILogger<RegistrationController> logger, IRegistryRepository repo)
         {
             _logger = logger;
+            _repo = repo;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetAllUsers()
         {
-
-            return Ok(await _context.RegistrationInformation.ToArrayAsync()); //Need to change DB to local server
+            var users = await _repo.GetAllUsers();
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetUser(int id)
+        public async Task<ActionResult> GetUser(string id)
         {
-            var user = await _context.RegistrationInformation.FindAsync(id);//Need to change DB to local server
+            var user = await _repo.GetUser(id);
             if (user == null)
             {
                 return NotFound();
@@ -33,7 +36,7 @@ namespace Registry.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostUser(RegistrationInformation user) //Need to create Class
+        public async Task<ActionResult> PostUser(RegistrationInformation user)
         {
 
             if (!ModelState.IsValid)
@@ -42,9 +45,8 @@ namespace Registry.API.Controllers
             }
 
 
-            _context.RegistrationInformation.Add(user);
-            await _context.SaveChangesAsync();
-
+            await _repo.AddUser(user);
+           
             return CreatedAtAction(
                 nameof(GetUser),
                 new { id = user.Id },
@@ -52,46 +54,25 @@ namespace Registry.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutUser(string id, RegistrationInformation user)//Need to create Class
+        public async Task<ActionResult> PutUser(string id, RegistrationInformation user)
         {
             if (id != user.Id)
             {
                 return BadRequest();
             }
-
-            _context.Entry(user).State = EntityState.Modified;// Not using entity framework
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)// Not using entity framework
-            {
-                if (!_context.RegistrationInformation.Any(p => p.Id == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _repo.UpdateUser(user);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(string id)
         {
-            var user = await _context.RegistrationInformation.FindAsync(id);
+            var user = await _repo.GetUser(id);
             if (user == null)
             {
                 return NotFound();
             }
-
-            _context.RegistrationInformation.Remove(user);
-            await _context.SaveChangesAsync();
-
+            await _repo.DeleteUser(user);
             return Ok(user);
         }
     }

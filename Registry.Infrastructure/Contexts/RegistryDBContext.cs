@@ -96,5 +96,34 @@ namespace Registry.Infrastructure.Contexts
                 return false;
             }
         }
+
+        public async Task<T> QueryFirstOrDefaultAsync<T>(string query, object? queryParams = null, CommandType? commandType = null, int? timeoutInSec = 30, CancellationToken cancellationToken = default)
+        {
+            using SqlConnection connection = new(_connectionString);
+
+            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: commandType, commandTimeout: timeoutInSec, cancellationToken: cancellationToken);
+
+            try
+            {
+                var res = await connection.QueryFirstOrDefaultAsync<T>(command);
+
+                return res;
+            }
+            catch (SqlException Ex)
+            {
+                _logger.LogWarning(Ex, SQL_EXCEPTION, "SqlException", command.CommandText);
+                return default;
+            }
+            catch (OperationCanceledException Ex)
+            {
+                _logger.LogWarning(Ex, SQL_EXCEPTION, "Operation was canceled", command.CommandText);
+                return default;
+            }
+            catch (Exception Ex)
+            {
+                _logger.LogWarning(Ex, SQL_EXCEPTION, "Unhandled exception occurred", command.CommandText);
+                return default;
+            }
+        }
     }
 }
