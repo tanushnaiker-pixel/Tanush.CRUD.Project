@@ -9,16 +9,17 @@ using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
+using Registry.Core.Config;
 
 namespace Registry.Infrastructure.Implementation
 {
     public class RegistryRepository : IRegistryRepository
     {
-        private readonly IConfiguration _configuration;
+        private readonly AppConfig _appConfig;
 
-        public RegistryRepository(IConfiguration configuration)
+        public RegistryRepository(AppConfig appConfig)
         {
-            _configuration = configuration;
+            _appConfig = appConfig;
         }
 
         public async Task AddUserAsync(RegistrationInformation registrationInformation)
@@ -55,7 +56,7 @@ namespace Registry.Infrastructure.Implementation
 
         private SqlConnection GetConnection()
         {
-            return new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return new SqlConnection(_appConfig.RegistryDB.ConnectionString);
         }
     }
 }
