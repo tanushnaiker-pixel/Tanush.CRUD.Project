@@ -9,7 +9,7 @@ GO
 --				information
 -- =============================================
 CREATE OR ALTER PROCEDURE UpdateUser
-	@Id nchar(50)
+	@IdNo nchar(13)
 	,@FirstName nchar(50)
 	,@LastName nchar(50)
 	,@Email nvarchar(50)
@@ -29,6 +29,6 @@ BEGIN
 		,[suburb] = @Suburb
 		,[city] = @City
 		,[province] = @Province
-	WHERE [id] = @Id
+	WHERE [idNo] = @IdNo
 END
 GO

@@ -7,7 +7,7 @@ GO
 -- Description:	Creating a new User
 -- =============================================
 CREATE or ALter PROCEDURE AddUser
-	@Id nchar(13)
+	@IdNo nchar(13)
 	,@FirstName nchar(50)
 	,@LastName nchar(50)
 	,@Email nvarchar(50)
@@ -18,7 +18,7 @@ CREATE or ALter PROCEDURE AddUser
 	,@Province nchar(50)
 AS
 BEGIN
-	INSERT INTO [dbo].[Users]([id], [firstName], [lastName], [email], [phone], [streetAddress], [suburb], [city], [province]) 
-	VALUES (@Id, @FirstName, @LastName, @Email, @Phone, @StreetAddress, @Suburb, @City, @Province)
+	INSERT INTO [dbo].[Users]([idNo], [firstName], [lastName], [email], [phone], [streetAddress], [suburb], [city], [province]) 
+	VALUES (@IdNo, @FirstName, @LastName, @Email, @Phone, @StreetAddress, @Suburb, @City, @Province)
 END
 GO

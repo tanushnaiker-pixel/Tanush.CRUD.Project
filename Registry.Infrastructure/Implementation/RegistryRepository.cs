@@ -18,10 +18,10 @@ namespace Registry.Infrastructure.Implementation
         public async Task AddUserAsync(RegistrationInformation registrationInformation)
         {
             using var connection = GetConnection();
-            await connection.ExecuteAsync("INSERT INTO Users (id, firstName, lastName, email, phone, streetAddress, suburb, city, province) VALUES (@Id, @FirstName, @LastName, @Email, @Phone, @StreetAddress, @Suburb, @City, @Province)", registrationInformation);
+            await connection.ExecuteAsync("INSERT INTO Users (idNo, firstName, lastName, email, phone, streetAddress, suburb, city, province) VALUES (@IdNo, @FirstName, @LastName, @Email, @Phone, @StreetAddress, @Suburb, @City, @Province)", registrationInformation);
         }
 
-        public async Task DeleteUserAsync(string id)
+        public async Task DeleteUserAsync(Guid id)
         {
             using var connection = GetConnection();
             await connection.ExecuteAsync("DELETE FROM Users WHERE id = @Id", new { Id = id });
@@ -34,7 +34,7 @@ namespace Registry.Infrastructure.Implementation
             return result.ToList();
         }
 
-        public async Task<RegistrationInformation> GetUserAsync(string id)
+        public async Task<RegistrationInformation> GetUserAsync(Guid id)
         {
             using var connection = GetConnection();
             var result = await connection.QueryFirstOrDefaultAsync<RegistrationInformation>("SELECT * FROM Users WHERE id = @Id", new { Id = id });
@@ -44,7 +44,7 @@ namespace Registry.Infrastructure.Implementation
         public async Task UpdateUserAsync(RegistrationInformation registrationInformation)
         {
             using var connection = GetConnection();
-            await connection.ExecuteAsync("UPDATE Users SET firstName = @FirstName, lastName = @LastName, email = @Email, phone = @Phone, streetAddress = @StreetAddress, suburb = @Suburb, city = @City, province = @Province WHERE id = @Id", registrationInformation);
+            await connection.ExecuteAsync("UPDATE Users SET firstName = @FirstName, lastName = @LastName, email = @Email, phone = @Phone, streetAddress = @StreetAddress, suburb = @Suburb, city = @City, province = @Province WHERE idNo = @IdNo", registrationInformation);
         }
 
         private SqlConnection GetConnection()

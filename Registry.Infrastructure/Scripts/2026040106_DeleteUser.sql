@@ -8,11 +8,11 @@ GO
 -- Description:	Deleting a User from the database
 -- =============================================
 CREATE PROCEDURE DeleteUser
-	@Id nchar(13)
+	@IdNo nchar(13)
 AS
 BEGIN
 	DELETE
 	FROM [dbo].[Users]
-	WHERE [id] = @Id
+	WHERE [idNo] = @IdNo
 END
 GO

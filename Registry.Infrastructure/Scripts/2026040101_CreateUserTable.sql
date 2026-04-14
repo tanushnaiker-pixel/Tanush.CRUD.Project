@@ -17,7 +17,8 @@ IF NOT EXISTS
 BEGIN
 	CREATE TABLE [dbo].[Users]
 	(
-		[id] nchar(13) NOT NULL
+		[id] UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY
+		,[idNo] nchar(13) NOT NULL
 		,[firstName] nchar(50) NOT NULL
 		,[lastName] nchar(50) NOT NULL
 		,[email] nvarchar(50) NOT NULL
@@ -26,7 +27,6 @@ BEGIN
 		,[suburb] nchar(50) NOT NULL
 		,[city] nchar(50) NOT NULL
 		,[province] nchar(50) NOT NULL
-		PRIMARY KEY([id])
 	);
 END;
 GO

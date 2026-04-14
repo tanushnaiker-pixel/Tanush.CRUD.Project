@@ -33,7 +33,7 @@ namespace Registry.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<RegistrationInformation>> GetUserAsync(string id)
+        public async Task<ActionResult<RegistrationInformation>> GetUserAsync(Guid id)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace Registry.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUserAsync(string id, RegistrationInformation registrationInformation)
+        public async Task<ActionResult> UpdateUserAsync(Guid id, RegistrationInformation registrationInformation)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace Registry.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUserAsync(string id)
+        public async Task<ActionResult> DeleteUserAsync(Guid id)
         {
             try
             {

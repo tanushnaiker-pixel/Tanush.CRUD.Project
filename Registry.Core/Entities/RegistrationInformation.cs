@@ -2,7 +2,8 @@
 {
     public class RegistrationInformation
     {
-        public required string Id { get; set; }
+        public Guid Id { get; set; }
+        public required string IdNo { get; set; }
 
         public required string FirstName { get; set; }
 
