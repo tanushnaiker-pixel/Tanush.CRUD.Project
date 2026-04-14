@@ -69,14 +69,23 @@ namespace Registry.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUserAsync(string id, RegistrationInformation registrationInformation)
         {
-            var existingUser = await _registryRepository.GetUserAsync(id);
-            if (existingUser == null)
+            try
             {
-                return NotFound("User not found.");
+                var existingUser = await _registryRepository.GetUserAsync(id);
+                if (existingUser == null)
+                {
+                    return NotFound("User not found.");
+                }
+                registrationInformation.Id = id;
+                await _registryRepository.UpdateUserAsync(registrationInformation);
+                return NoContent();
             }
-            registrationInformation.Id = id;
-            await _registryRepository.UpdateUserAsync(registrationInformation);
-            return NoContent();
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating the user.");
+                return BadRequest("An error occurred");
+            }
+            
         }
 
         [HttpDelete("{id}")]
