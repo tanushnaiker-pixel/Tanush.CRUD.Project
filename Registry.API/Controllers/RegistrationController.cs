@@ -10,36 +10,61 @@ namespace Registry.API.Controllers
     public class RegistrationController : ControllerBase
     {
         private readonly IRegistryRepository _registryRepository;
+        private readonly ILogger<RegistrationController> _logger;
 
-        public RegistrationController(IRegistryRepository registryRepository)
+        public RegistrationController(IRegistryRepository registryRepository, ILogger<RegistrationController> logger)
         {
             _registryRepository = registryRepository;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<RegistrationInformation>>> GetAllAsync()
         {
-            var result = await _registryRepository.GetAllAsync();
-            return Ok(result);
+            try
+            {
+                var result = await _registryRepository.GetAllAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving all users.");
+                return BadRequest("An error occurred");
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<RegistrationInformation>> GetUserAsync(string id)
         {
-            var result = await _registryRepository.GetUserAsync(id);
-            if(result == null)
+            try
             {
-                return NotFound("No user found with the given ID.");
+                var result = await _registryRepository.GetUserAsync(id);
+                if (result == null)
+                {
+                    return NotFound("No user found with the given ID.");
+                }
+                return Ok(result);
             }
-            return Ok(result);
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving the user.");
+                return BadRequest("An error occurred");
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult> AddUserAsync(RegistrationInformation registrationInformation)
         {
-            await _registryRepository.AddUserAsync(registrationInformation);
-            return Ok();
+            try
+            {
+                await _registryRepository.AddUserAsync(registrationInformation);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a new user.");
+                return BadRequest("An error occurred");
+            }
         }
 
         [HttpPut("{id}")]
@@ -58,20 +83,21 @@ namespace Registry.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUserAsync(string id)
         {
-            var existingUser = await _registryRepository.GetUserAsync(id);
-            if (existingUser == null)
+            try
             {
-                return NotFound("User not found.");
+                var existingUser = await _registryRepository.GetUserAsync(id);
+                if (existingUser == null)
+                {
+                    return NotFound("User not found.");
+                }
+                await _registryRepository.DeleteUserAsync(id);
+                return NoContent();
             }
-            await _registryRepository.DeleteUserAsync(id);
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting the user.");
+                return BadRequest("An error occurred");
+            }
         }
-
-        //private readonly ILogger<RegistrationController> _logger;
-
-        //public RegistrationController(ILogger<RegistrationController> logger)
-        //{
-        //    _logger = logger;
-        //}
     }
 }
