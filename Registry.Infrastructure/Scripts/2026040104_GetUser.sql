@@ -9,11 +9,11 @@ GO
 --				information
 -- =============================================
 CREATE PROCEDURE  GetUser
-	@Id int
+	@IdNo nchar(13)
 AS
 BEGIN
 	SELECT *
-	FROM [dbo].[Users]
-	WHERE id = @Id;
+	FROM [dbo].[Users] (NOLOCK)
+	WHERE [idNo] = @IdNo;
 END
 GO

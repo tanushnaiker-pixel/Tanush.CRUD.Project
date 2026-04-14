@@ -38,11 +38,11 @@ namespace Registry.Infrastructure.Contexts
             }
         }
 
-        public async Task<IEnumerable<T>?> QueryAsync<T>(string query, object? queryParams = null, CommandType? commandType = null, int? timeoutInSec = 30, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>?> QueryAsync<T>(string query, object? queryParams = null, CommandType? commandType = null, int? timeoutInSec = 30)
         {
             using SqlConnection connection = new(_connectionString);
 
-            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: commandType, commandTimeout: timeoutInSec, cancellationToken: cancellationToken);
+            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: commandType, commandTimeout: timeoutInSec);
 
             try
             {
@@ -67,11 +67,11 @@ namespace Registry.Infrastructure.Contexts
             }
         }
 
-        public async Task<bool> ExecuteAsync(string query, DynamicParameters? queryParams = null, CancellationToken cancellationToken = default)
+        public async Task<bool> ExecuteAsync(string query, DynamicParameters? queryParams = null)
         {
             using SqlConnection connection = new(_connectionString);
 
-            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken);
+            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: CommandType.StoredProcedure);
 
             try
             {

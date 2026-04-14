@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Registry.Core.Entities;
+using Registry.Infrastructure.Interfaces;
 
 namespace Registry.API.Controllers
 {
@@ -7,92 +8,104 @@ namespace Registry.API.Controllers
     [Route("[controller]")]
     public class RegistrationController : ControllerBase
     {
+        private readonly IRegistryRepository _registryRepository;
         private readonly ILogger<RegistrationController> _logger;
 
-        public RegistrationController(ILogger<RegistrationController> logger)
+        public RegistrationController(IRegistryRepository registryRepository, ILogger<RegistrationController> logger)
         {
+            _registryRepository = registryRepository;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllUsers()
+        public async Task<ActionResult<List<RegistrationInformation>>> GetAllAsync()
         {
-
-            return Ok(await _context.RegistrationInformation.ToArrayAsync()); //Need to change DB to local server
+            try
+            {
+                var result = await _registryRepository.GetAllAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving all users.");
+                return BadRequest("An error occurred");
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetUser(int id)
+        public async Task<ActionResult<RegistrationInformation>> GetUserAsync(Guid id)
         {
-            var user = await _context.RegistrationInformation.FindAsync(id);//Need to change DB to local server
-            if (user == null)
+            try
             {
-                return NotFound();
+                var result = await _registryRepository.GetUserAsync(id);
+                if (result == null)
+                {
+                    return NotFound("No user found with the given ID.");
+                }
+                return Ok(result);
             }
-            return Ok(user);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving the user.");
+                return BadRequest("An error occurred");
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostUser(RegistrationInformation user) //Need to create Class
+        public async Task<ActionResult> AddUserAsync(RegistrationInformation registrationInformation)
         {
-
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest();
+                await _registryRepository.AddUserAsync(registrationInformation);
+                return Ok();
             }
-
-
-            _context.RegistrationInformation.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(
-                nameof(GetUser),
-                new { id = user.Id },
-                user);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a new user.");
+                return BadRequest("An error occurred");
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutUser(string id, RegistrationInformation user)//Need to create Class
+        public async Task<ActionResult> UpdateUserAsync(Guid id, RegistrationInformation registrationInformation)
         {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;// Not using entity framework
-
             try
             {
-                await _context.SaveChangesAsync();
+                var existingUser = await _registryRepository.GetUserAsync(id);
+                if (existingUser == null)
+                {
+                    return NotFound("User not found.");
+                }
+                registrationInformation.Id = id;
+                await _registryRepository.UpdateUserAsync(registrationInformation);
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)// Not using entity framework
+            catch(Exception ex)
             {
-                if (!_context.RegistrationInformation.Any(p => p.Id == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                _logger.LogError(ex, "An error occurred while updating the user.");
+                return BadRequest("An error occurred");
             }
-
-            return NoContent();
+            
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUser(string id)
+        public async Task<ActionResult> DeleteUserAsync(Guid id)
         {
-            var user = await _context.RegistrationInformation.FindAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound();
+                var existingUser = await _registryRepository.GetUserAsync(id);
+                if (existingUser == null)
+                {
+                    return NotFound("User not found.");
+                }
+                await _registryRepository.DeleteUserAsync(id);
+                return NoContent();
             }
-
-            _context.RegistrationInformation.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting the user.");
+                return BadRequest("An error occurred");
+            }
         }
     }
 }
