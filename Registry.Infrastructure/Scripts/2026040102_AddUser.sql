@@ -7,7 +7,7 @@ GO
 -- Create date: 30/03/2026
 -- Description:	Creating a new User
 -- =============================================
-CREATE PROCEDURE AddUser
+CREATE or ALter PROCEDURE AddUser
 	@Id nchar(13),
 	@FirstName nchar(50),
 	@LastName nchar(50),

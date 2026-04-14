@@ -8,7 +8,7 @@ GO
 -- Description:	Updating a specific user's 
 --				information
 -- =============================================
-CREATE PROCEDURE UpdateUser
+CREATE OR ALTER PROCEDURE UpdateUser
 	@Id nchar(50),
 	@FirstName nchar(50),
 	@LastName nchar(50),
@@ -21,14 +21,14 @@ CREATE PROCEDURE UpdateUser
 AS
 BEGIN
 	UPDATE [dbo].[Users]
-	SET firstName = @FirstName,
-		lastName = @LastName,
-		email = @Email,
-		phone = @Phone,
-		streetAddress = @StreetAddress,
-		suburb = @Suburb,
-		city = @City,
-		province = @Province
-	WHERE id = @Id
+	SET [firstName] = @FirstName,
+		[lastName] = @LastName,
+		[email] = @Email,
+		[phone] = @Phone,
+		[streetAddress] = @StreetAddress,
+		[suburb] = @Suburb,
+		[city] = @City,
+		[province] = @Province
+	WHERE [id] = @Id
 END
 GO

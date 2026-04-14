@@ -13,6 +13,6 @@ AS
 BEGIN
 	DELETE
 	FROM [dbo].[Users]
-	WHERE id = @Id
+	WHERE [id] = @Id
 END
 GO

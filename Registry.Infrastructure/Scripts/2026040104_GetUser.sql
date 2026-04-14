@@ -14,6 +14,6 @@ AS
 BEGIN
 	SELECT *
 	FROM [dbo].[Users]
-	WHERE id = @Id;
+	WHERE [id] = @Id;
 END
 GO

@@ -9,8 +9,8 @@ namespace Registry.API.Config
     {
         public static WebApplicationBuilder ConfigureSerivces(this WebApplicationBuilder builder, AppConfig config)
         {
-            builder.Services.AddSingleton(config);
-                                
+            builder.Services.AddSingleton(config);// Need to understand what Willow said.
+
             // Repositories
             builder.Services.AddSingleton<IRegistryRepository, RegistryRepository>();
 
@@ -20,8 +20,6 @@ namespace Registry.API.Config
             // Contexts
             builder.Services.AddSingleton<IRegistryDBContext, RegistryDBContext>();
 
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddHealthChecks();
 
             return builder;

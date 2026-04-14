@@ -7,6 +7,7 @@ AppConfig config = new();
 builder.Configuration.GetSection("AppConfig").Bind(config);
 builder.ConfigureSerivces(config);
 
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
