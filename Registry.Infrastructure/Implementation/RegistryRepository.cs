@@ -1,13 +1,6 @@
-﻿using Microsoft.IdentityModel.Protocols.Configuration;
-using Registry.Core.Entities;
+﻿using Registry.Core.Entities;
 using Registry.Infrastructure.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dapper;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using Registry.Core.Config;
 

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Registry.Core.Entities;
-using Registry.Infrastructure.Implementation;
 using Registry.Infrastructure.Interfaces;
 
 namespace Registry.API.Controllers

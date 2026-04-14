@@ -1,8 +1,5 @@
 using Registry.API.Config;
 using Registry.Core.Config;
-using Registry.Infrastructure.Implementation;
-using Registry.Infrastructure.Interfaces;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
