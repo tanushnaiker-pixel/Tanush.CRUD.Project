@@ -1,5 +1,4 @@
 SET ANSI_NULLS ON
-GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
@@ -18,15 +17,15 @@ IF NOT EXISTS
 BEGIN
 	CREATE TABLE [dbo].[Users]
 	(
-		[id] nchar(13) NOT NULL,
-		[firstName] nchar(50) NOT NULL,
-		[lastName] nchar(50) NOT NULL,
-		[email] nvarchar(50) NOT NULL,
-		[phone] nchar(50) NOT NULL,
-		[streetAddress] nchar(50) NOT NULL,
-		[suburb] nchar(50) NOT NULL,
-		[city] nchar(50) NOT NULL,
-		[province] nchar(50) NOT NULL
+		[id] nchar(13) NOT NULL
+		,[firstName] nchar(50) NOT NULL
+		,[lastName] nchar(50) NOT NULL
+		,[email] nvarchar(50) NOT NULL
+		,[phone] nchar(50) NOT NULL
+		,[streetAddress] nchar(50) NOT NULL
+		,[suburb] nchar(50) NOT NULL
+		,[city] nchar(50) NOT NULL
+		,[province] nchar(50) NOT NULL
 		PRIMARY KEY([id])
 	);
 END;

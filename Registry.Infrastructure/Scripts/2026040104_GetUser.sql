@@ -13,7 +13,7 @@ CREATE PROCEDURE  GetUser
 AS
 BEGIN
 	SELECT *
-	FROM [dbo].[Users]
+	FROM [dbo].[Users] (NOLOCK)
 	WHERE [id] = @Id;
 END
 GO

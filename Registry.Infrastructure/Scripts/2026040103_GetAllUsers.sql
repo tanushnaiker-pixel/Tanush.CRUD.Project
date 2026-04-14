@@ -15,7 +15,7 @@ AS
 
 BEGIN
 	SELECT * 
-	FROM [dbo].[Users]
+	FROM [dbo].[Users] (NOLOCK)
 	-- Could add pagination with LIMIT = 10;
 END
 GO
