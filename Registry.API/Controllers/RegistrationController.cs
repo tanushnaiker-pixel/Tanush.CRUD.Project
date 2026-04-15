@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Registry.Application.Interfaces;
 using Registry.Core.Entities;
-using Registry.Infrastructure.Interfaces;
 
 namespace Registry.API.Controllers
 {
@@ -8,12 +8,12 @@ namespace Registry.API.Controllers
     [Route("[controller]")]
     public class RegistrationController : ControllerBase
     {
-        private readonly IRegistryRepository _registryRepository;
+        private readonly IRegistryService _registryService;
         private readonly ILogger<RegistrationController> _logger;
 
-        public RegistrationController(IRegistryRepository registryRepository, ILogger<RegistrationController> logger)
+        public RegistrationController(IRegistryService registryService, ILogger<RegistrationController> logger)
         {
-            _registryRepository = registryRepository;
+            _registryService = registryService;
             _logger = logger;
         }
 
@@ -22,7 +22,7 @@ namespace Registry.API.Controllers
         {
             try
             {
-                var result = await _registryRepository.GetAllAsync();
+                var result = await _registryService.GetAllAsync();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -37,7 +37,7 @@ namespace Registry.API.Controllers
         {
             try
             {
-                var result = await _registryRepository.GetUserAsync(id);
+                var result = await _registryService.GetUserAsync(id);
                 if (result == null)
                 {
                     return NotFound("No user found with the given ID.");
@@ -56,7 +56,7 @@ namespace Registry.API.Controllers
         {
             try
             {
-                await _registryRepository.AddUserAsync(registrationInformation);
+                await _registryService.AddUserAsync(registrationInformation);
                 return Ok();
             }
             catch (Exception ex)
@@ -71,13 +71,13 @@ namespace Registry.API.Controllers
         {
             try
             {
-                var existingUser = await _registryRepository.GetUserAsync(id);
+                var existingUser = await _registryService.GetUserAsync(id);
                 if (existingUser == null)
                 {
                     return NotFound("User not found.");
                 }
                 registrationInformation.Id = id;
-                await _registryRepository.UpdateUserAsync(registrationInformation);
+                await _registryService.UpdateUserAsync(registrationInformation);
                 return NoContent();
             }
             catch(Exception ex)
@@ -93,12 +93,12 @@ namespace Registry.API.Controllers
         {
             try
             {
-                var existingUser = await _registryRepository.GetUserAsync(id);
+                var existingUser = await _registryService.GetUserAsync(id);
                 if (existingUser == null)
                 {
                     return NotFound("User not found.");
                 }
-                await _registryRepository.DeleteUserAsync(id);
+                await _registryService.DeleteUserAsync(id);
                 return NoContent();
             }
             catch (Exception ex)
