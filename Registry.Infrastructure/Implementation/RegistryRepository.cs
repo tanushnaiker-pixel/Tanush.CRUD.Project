@@ -2,6 +2,7 @@
 using Registry.Infrastructure.Interfaces;
 using Dapper;
 using System.Data;
+using Registry.Core;
 
 namespace Registry.Infrastructure.Implementation
 {
@@ -27,7 +28,7 @@ namespace Registry.Infrastructure.Implementation
             parameters.Add("@City", registrationInformation.City);
             parameters.Add("@Province", registrationInformation.Province);
 
-            bool result = await _dbContext.ExecuteAsync("AddUser", parameters);
+            bool result = await _dbContext.ExecuteAsync(ProcNames.ADD_USER, parameters);
             return result;
         }
 
@@ -36,13 +37,13 @@ namespace Registry.Infrastructure.Implementation
             DynamicParameters parameters = new();
             parameters.Add("@Id", id);
 
-            bool result = await _dbContext.ExecuteAsync("DeleteUser", parameters);
+            bool result = await _dbContext.ExecuteAsync(ProcNames.DELETE_USER, parameters);
             return result;
         }
 
         public async Task<List<RegistrationInformation>> GetAllAsync()
         {
-            var result = await _dbContext.QueryAsync<RegistrationInformation>("GetAllUsers", commandType: CommandType.StoredProcedure);
+            var result = await _dbContext.QueryAsync<RegistrationInformation>(ProcNames.GET_ALL_USERS, commandType: CommandType.StoredProcedure);
             return result.ToList();
         }
 
@@ -51,7 +52,7 @@ namespace Registry.Infrastructure.Implementation
             DynamicParameters parameters = new();
             parameters.Add("@Id", id);
 
-            var result = await _dbContext.QueryFirstOrDefaultAsync<RegistrationInformation>("GetUser", parameters);
+            var result = await _dbContext.QueryFirstOrDefaultAsync<RegistrationInformation>(ProcNames.GET_USER, parameters);
             return result;
         }
 
@@ -68,7 +69,7 @@ namespace Registry.Infrastructure.Implementation
             parameters.Add("@City", registrationInformation.City);
             parameters.Add("@Province", registrationInformation.Province);
 
-            bool result  = await _dbContext.ExecuteAsync("UpdateUser", parameters);
+            bool result  = await _dbContext.ExecuteAsync(ProcNames.UPDATE_USER, parameters);
             return result;
         }
     }
