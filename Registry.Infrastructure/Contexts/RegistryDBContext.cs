@@ -67,6 +67,33 @@ namespace Registry.Infrastructure.Contexts
             }
         }
 
+        public async Task<T?> QueryFirstOrDefaultAsync<T>(string query, DynamicParameters? queryParams = null)
+        {
+            using SqlConnection connection = new(_connectionString);
+            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: CommandType.StoredProcedure);
+
+            try
+            {
+                var response = await connection.QueryFirstOrDefaultAsync<T>(command);
+                return response;
+            }
+            catch(SqlException Ex)
+            {
+                _logger.LogWarning(Ex, SQL_EXCEPTION, "SqlException", command.CommandText);
+                return default;
+            }
+            catch(OperationCanceledException Ex)
+            {
+                _logger.LogWarning(Ex, SQL_EXCEPTION, "Operation was canceled", command.CommandText);
+                return default;
+            }
+            catch (Exception Ex)
+            {
+                _logger.LogWarning(Ex, SQL_EXCEPTION, "Unhandled exception occurred", command.CommandText);
+                return default;
+            }
+        }
+
         public async Task<bool> ExecuteAsync(string query, DynamicParameters? queryParams = null)
         {
             using SqlConnection connection = new(_connectionString);
