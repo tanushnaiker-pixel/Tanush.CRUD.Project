@@ -1,55 +1,76 @@
 ﻿using Registry.Core.Entities;
 using Registry.Infrastructure.Interfaces;
 using Dapper;
-using Microsoft.Data.SqlClient;
-using Registry.Core.Config;
+using System.Data;
+using Registry.Core;
 
 namespace Registry.Infrastructure.Implementation
 {
     public class RegistryRepository : IRegistryRepository
     {
-        private readonly AppConfig _appConfig;
+        private readonly IRegistryDBContext _dbContext;
 
-        public RegistryRepository(AppConfig appConfig)
+        public RegistryRepository(IRegistryDBContext dbContext)
         {
-            _appConfig = appConfig;
+            _dbContext = dbContext;
         }
 
-        public async Task AddUserAsync(RegistrationInformation registrationInformation)
+        public async Task<bool> AddUserAsync(RegistrationInformation registrationInformation)
         {
-            using var connection = GetConnection();
-            await connection.ExecuteAsync("INSERT INTO Users (idNo, firstName, lastName, email, phone, streetAddress, suburb, city, province) VALUES (@IdNo, @FirstName, @LastName, @Email, @Phone, @StreetAddress, @Suburb, @City, @Province)", registrationInformation);
+            DynamicParameters parameters = new();
+            parameters.Add("@IdNo", registrationInformation.IdNo);
+            parameters.Add("@FirstName", registrationInformation.FirstName);
+            parameters.Add("@LastName", registrationInformation.LastName);
+            parameters.Add("@Email", registrationInformation.Email);
+            parameters.Add("@Phone", registrationInformation.Phone);
+            parameters.Add("@StreetAddress", registrationInformation.StreetAddress);
+            parameters.Add("@Suburb", registrationInformation.Suburb);
+            parameters.Add("@City", registrationInformation.City);
+            parameters.Add("@Province", registrationInformation.Province);
+
+            bool result = await _dbContext.ExecuteAsync(ProcNames.ADD_USER, parameters);
+            return result;
         }
 
-        public async Task DeleteUserAsync(Guid id)
+        public async Task<bool> DeleteUserAsync(Guid id)
         {
-            using var connection = GetConnection();
-            await connection.ExecuteAsync("DELETE FROM Users WHERE id = @Id", new { Id = id });
+            DynamicParameters parameters = new();
+            parameters.Add("@Id", id);
+
+            bool result = await _dbContext.ExecuteAsync(ProcNames.DELETE_USER, parameters);
+            return result;
         }
 
         public async Task<List<RegistrationInformation>> GetAllAsync()
         {
-            using var connection = GetConnection();
-            var result = await connection.QueryAsync<RegistrationInformation>("SELECT * FROM Users");
+            var result = await _dbContext.QueryAsync<RegistrationInformation>(ProcNames.GET_ALL_USERS, commandType: CommandType.StoredProcedure);
             return result.ToList();
         }
 
         public async Task<RegistrationInformation> GetUserAsync(Guid id)
         {
-            using var connection = GetConnection();
-            var result = await connection.QueryFirstOrDefaultAsync<RegistrationInformation>("SELECT * FROM Users WHERE id = @Id", new { Id = id });
+            DynamicParameters parameters = new();
+            parameters.Add("@Id", id);
+
+            var result = await _dbContext.QueryFirstOrDefaultAsync<RegistrationInformation>(ProcNames.GET_USER, parameters);
             return result;
         }
 
-        public async Task UpdateUserAsync(RegistrationInformation registrationInformation)
-        {
-            using var connection = GetConnection();
-            await connection.ExecuteAsync("UPDATE Users SET firstName = @FirstName, lastName = @LastName, email = @Email, phone = @Phone, streetAddress = @StreetAddress, suburb = @Suburb, city = @City, province = @Province WHERE idNo = @IdNo", registrationInformation);
-        }
+        public async Task<bool> UpdateUserAsync(RegistrationInformation registrationInformation)
+        {            
+            DynamicParameters parameters = new();
+            parameters.Add("@Id", registrationInformation.Id);
+            parameters.Add("@FirstName", registrationInformation.FirstName);
+            parameters.Add("@LastName", registrationInformation.LastName);
+            parameters.Add("@Email", registrationInformation.Email);
+            parameters.Add("@Phone", registrationInformation.Phone);
+            parameters.Add("@StreetAddress", registrationInformation.StreetAddress);
+            parameters.Add("@Suburb", registrationInformation.Suburb);
+            parameters.Add("@City", registrationInformation.City);
+            parameters.Add("@Province", registrationInformation.Province);
 
-        private SqlConnection GetConnection()
-        {
-            return new SqlConnection(_appConfig.RegistryDB.ConnectionString);
+            bool result  = await _dbContext.ExecuteAsync(ProcNames.UPDATE_USER, parameters);
+            return result;
         }
     }
 }

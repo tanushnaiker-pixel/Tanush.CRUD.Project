@@ -6,8 +6,8 @@ namespace Registry.Infrastructure.Interfaces
     {
         Task<List<RegistrationInformation>> GetAllAsync();
         Task<RegistrationInformation> GetUserAsync(Guid id);
-        Task AddUserAsync(RegistrationInformation registrationInformation);
-        Task UpdateUserAsync(RegistrationInformation registrationInformation);
-        Task DeleteUserAsync(Guid id);
+        Task<bool> AddUserAsync(RegistrationInformation registrationInformation);
+        Task<bool> UpdateUserAsync(RegistrationInformation registrationInformation);
+        Task<bool> DeleteUserAsync(Guid id);
     }
 }
