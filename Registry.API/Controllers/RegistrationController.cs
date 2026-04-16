@@ -18,11 +18,11 @@ namespace Registry.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<RegistrationInformation>>> GetAllAsync()
+        public async Task<ActionResult<List<RegistrationInformation>>> GetAllAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _registryService.GetAllAsync();
+                var result = await _registryService.GetAllAsync(cancellationToken);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -33,11 +33,11 @@ namespace Registry.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<RegistrationInformation>> GetUserAsync(Guid id)
+        public async Task<ActionResult<RegistrationInformation>> GetUserAsync(Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _registryService.GetUserAsync(id);
+                var result = await _registryService.GetUserAsync(id, cancellationToken);
                 if (result == null)
                 {
                     return NotFound("No user found with the given ID.");
@@ -52,11 +52,11 @@ namespace Registry.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddUserAsync(RegistrationInformation registrationInformation)
+        public async Task<ActionResult> AddUserAsync(RegistrationInformation registrationInformation, CancellationToken cancellationToken)
         {
             try
             {
-                await _registryService.AddUserAsync(registrationInformation);
+                await _registryService.AddUserAsync(registrationInformation, cancellationToken);
                 return Ok();
             }
             catch (Exception ex)
@@ -67,17 +67,17 @@ namespace Registry.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUserAsync(Guid id, RegistrationInformation registrationInformation)
+        public async Task<ActionResult> UpdateUserAsync(Guid id, RegistrationInformation registrationInformation, CancellationToken cancellationToken)
         {
             try
             {
-                var existingUser = await _registryService.GetUserAsync(id);
+                var existingUser = await _registryService.GetUserAsync(id, cancellationToken);
                 if (existingUser == null)
                 {
                     return NotFound("User not found.");
                 }
                 registrationInformation.Id = id;
-                await _registryService.UpdateUserAsync(registrationInformation);
+                await _registryService.UpdateUserAsync(registrationInformation, cancellationToken);
                 return NoContent();
             }
             catch(Exception ex)
@@ -89,16 +89,16 @@ namespace Registry.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUserAsync(Guid id)
+        public async Task<ActionResult> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                var existingUser = await _registryService.GetUserAsync(id);
+                var existingUser = await _registryService.GetUserAsync(id, cancellationToken);
                 if (existingUser == null)
                 {
                     return NotFound("User not found.");
                 }
-                await _registryService.DeleteUserAsync(id);
+                await _registryService.DeleteUserAsync(id, cancellationToken);
                 return NoContent();
             }
             catch (Exception ex)

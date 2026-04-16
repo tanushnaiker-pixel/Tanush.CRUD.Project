@@ -15,7 +15,7 @@ namespace Registry.Infrastructure.Implementation
             _dbContext = dbContext;
         }
 
-        public async Task<bool> AddUserAsync(RegistrationInformation registrationInformation)
+        public async Task<bool> AddUserAsync(RegistrationInformation registrationInformation, CancellationToken cancellationToken)
         {
             DynamicParameters parameters = new();
             parameters.Add("@IdNo", registrationInformation.IdNo);
@@ -28,35 +28,35 @@ namespace Registry.Infrastructure.Implementation
             parameters.Add("@City", registrationInformation.City);
             parameters.Add("@Province", registrationInformation.Province);
 
-            bool result = await _dbContext.ExecuteAsync(ProcNames.ADD_USER, parameters);
+            bool result = await _dbContext.ExecuteAsync(ProcNames.ADD_USER, parameters, cancellationToken);
             return result;
         }
 
-        public async Task<bool> DeleteUserAsync(Guid id)
+        public async Task<bool> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
         {
             DynamicParameters parameters = new();
             parameters.Add("@Id", id);
 
-            bool result = await _dbContext.ExecuteAsync(ProcNames.DELETE_USER, parameters);
+            bool result = await _dbContext.ExecuteAsync(ProcNames.DELETE_USER, parameters, cancellationToken);
             return result;
         }
 
-        public async Task<List<RegistrationInformation>> GetAllAsync()
+        public async Task<List<RegistrationInformation>> GetAllAsync(CancellationToken cancellationToken)
         {
-            var result = await _dbContext.QueryAsync<RegistrationInformation>(ProcNames.GET_ALL_USERS, commandType: CommandType.StoredProcedure);
+            var result = await _dbContext.QueryAsync<RegistrationInformation>(ProcNames.GET_ALL_USERS, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken);
             return result.ToList();
         }
 
-        public async Task<RegistrationInformation> GetUserAsync(Guid id)
+        public async Task<RegistrationInformation> GetUserAsync(Guid id, CancellationToken cancellationToken)
         {
             DynamicParameters parameters = new();
             parameters.Add("@Id", id);
 
-            var result = await _dbContext.QueryFirstOrDefaultAsync<RegistrationInformation>(ProcNames.GET_USER, parameters);
+            var result = await _dbContext.QueryFirstOrDefaultAsync<RegistrationInformation>(ProcNames.GET_USER, parameters, cancellationToken: cancellationToken);
             return result;
         }
 
-        public async Task<bool> UpdateUserAsync(RegistrationInformation registrationInformation)
+        public async Task<bool> UpdateUserAsync(RegistrationInformation registrationInformation, CancellationToken cancellationToken)
         {            
             DynamicParameters parameters = new();
             parameters.Add("@Id", registrationInformation.Id);
@@ -69,7 +69,7 @@ namespace Registry.Infrastructure.Implementation
             parameters.Add("@City", registrationInformation.City);
             parameters.Add("@Province", registrationInformation.Province);
 
-            bool result  = await _dbContext.ExecuteAsync(ProcNames.UPDATE_USER, parameters);
+            bool result  = await _dbContext.ExecuteAsync(ProcNames.UPDATE_USER, parameters, cancellationToken);
             return result;
         }
     }
