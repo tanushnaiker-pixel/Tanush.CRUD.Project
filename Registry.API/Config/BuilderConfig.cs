@@ -1,4 +1,6 @@
-﻿using Registry.Core.Config;
+﻿using Registry.Application.Implementation;
+using Registry.Application.Interfaces;
+using Registry.Core.Config;
 using Registry.Infrastructure.Contexts;
 using Registry.Infrastructure.Implementation;
 using Registry.Infrastructure.Interfaces;
@@ -10,6 +12,9 @@ namespace Registry.API.Config
         public static WebApplicationBuilder ConfigureSerivces(this WebApplicationBuilder builder, AppConfig config)
         {
             builder.Services.AddSingleton(config);// Need to understand what Willow said.
+
+            // Services
+            builder.Services.AddSingleton<IRegistryService, RegistryService>();
 
             // Repositories
             builder.Services.AddSingleton<IRegistryRepository, RegistryRepository>();
