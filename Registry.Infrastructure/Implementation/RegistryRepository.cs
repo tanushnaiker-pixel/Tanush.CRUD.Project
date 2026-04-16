@@ -44,10 +44,10 @@ namespace Registry.Infrastructure.Implementation
         public async Task<List<RegistrationInformation>> GetAllAsync(CancellationToken cancellationToken)
         {
             var result = await _dbContext.QueryAsync<RegistrationInformation>(ProcNames.GET_ALL_USERS, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken);
-            return result.ToList();
+            return result?.ToList() ?? [];
         }
 
-        public async Task<RegistrationInformation> GetUserAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<RegistrationInformation?> GetUserAsync(Guid id, CancellationToken cancellationToken)
         {
             DynamicParameters parameters = new();
             parameters.Add("@Id", id);
