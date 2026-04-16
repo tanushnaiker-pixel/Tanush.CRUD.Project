@@ -13,29 +13,29 @@ namespace Registry.Application.Implementation
             _registryRepository = registryRepository;
         }
 
-        public async Task<bool> AddUserAsync(RegistrationInformation registrationInformation)
+        public async Task<bool> AddUserAsync(RegistrationInformation registrationInformation, CancellationToken cancellationToken)
         {
-            return await _registryRepository.AddUserAsync(registrationInformation);
+            return await _registryRepository.AddUserAsync(registrationInformation, cancellationToken);
         }
 
-        public async Task<bool> DeleteUserAsync(Guid id)
+        public async Task<bool> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _registryRepository.DeleteUserAsync(id);
+            return await _registryRepository.DeleteUserAsync(id, cancellationToken);
         }
 
-        public Task<List<RegistrationInformation>> GetAllAsync()
+        public Task<List<RegistrationInformation>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return _registryRepository.GetAllAsync();
+            return _registryRepository.GetAllAsync(cancellationToken);
         }
 
-        public Task<RegistrationInformation> GetUserAsync(Guid id)
+        public Task<RegistrationInformation> GetUserAsync(Guid id, CancellationToken cancellationToken)
         {
-            return _registryRepository.GetUserAsync(id);
+            return _registryRepository.GetUserAsync(id, cancellationToken);
         }
 
-        public Task<bool> UpdateUserAsync(RegistrationInformation registrationInformation)
+        public Task<bool> UpdateUserAsync(RegistrationInformation registrationInformation, CancellationToken cancellationToken)
         {
-            return _registryRepository.UpdateUserAsync(registrationInformation);
+            return _registryRepository.UpdateUserAsync(registrationInformation, cancellationToken);
         }
     }
 }

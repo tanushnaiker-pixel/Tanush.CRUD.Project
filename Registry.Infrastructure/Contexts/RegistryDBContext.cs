@@ -38,12 +38,11 @@ namespace Registry.Infrastructure.Contexts
             }
         }
 
-        public async Task<IEnumerable<T>?> QueryAsync<T>(string query, object? queryParams = null, CommandType? commandType = null, int? timeoutInSec = 30)
+        public async Task<IEnumerable<T>?> QueryAsync<T>(string query, object? queryParams = null, CommandType? commandType = null, int? timeoutInSec = 30, CancellationToken cancellationToken = default)
         {
             using SqlConnection connection = new(_connectionString);
 
-            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: commandType, commandTimeout: timeoutInSec);
-
+            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: commandType, commandTimeout: timeoutInSec, cancellationToken: cancellationToken);
             try
             {
                 IEnumerable<T> res = await connection.QueryAsync<T>(command);
@@ -67,10 +66,10 @@ namespace Registry.Infrastructure.Contexts
             }
         }
 
-        public async Task<T?> QueryFirstOrDefaultAsync<T>(string query, DynamicParameters? queryParams = null)
+        public async Task<T?> QueryFirstOrDefaultAsync<T>(string query, DynamicParameters? queryParams = null, CancellationToken cancellationToken = default)
         {
             using SqlConnection connection = new(_connectionString);
-            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: CommandType.StoredProcedure);
+            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken);
 
             try
             {
@@ -94,12 +93,11 @@ namespace Registry.Infrastructure.Contexts
             }
         }
 
-        public async Task<bool> ExecuteAsync(string query, DynamicParameters? queryParams = null)
+        public async Task<bool> ExecuteAsync(string query, DynamicParameters? queryParams = null, CancellationToken cancellationToken = default)
         {
             using SqlConnection connection = new(_connectionString);
 
-            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: CommandType.StoredProcedure);
-
+            CommandDefinition command = new(commandText: query, parameters: queryParams, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken);
             try
             {
                 int rowsEffected = await connection.ExecuteAsync(command);
