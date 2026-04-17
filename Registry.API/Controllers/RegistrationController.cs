@@ -5,7 +5,7 @@ using Registry.Core.Entities;
 namespace Registry.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("register")]
     public class RegistrationController : ControllerBase
     {
         private readonly IRegistryService _registryService;
@@ -60,8 +60,12 @@ namespace Registry.API.Controllers
         {
             try
             {
-                await _registryService.AddUserAsync(registrationInformation, cancellationToken);
-                return Ok();
+                bool result = await _registryService.AddUserAsync(registrationInformation, cancellationToken);
+                if(result == true)
+                {
+                    return Ok("User added successfully.");
+                }
+                return BadRequest("User already exists.");
             }
             catch (Exception ex)
             {
@@ -70,19 +74,17 @@ namespace Registry.API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUserAsync(Guid id, RegistrationInformation registrationInformation, CancellationToken cancellationToken)
+        [HttpPut]
+        public async Task<ActionResult> UpdateUserAsync(RegistrationInformation registrationInformation, CancellationToken cancellationToken)
         {
             try
             {
-                var existingUser = await _registryService.GetUserAsync(id, cancellationToken);
-                if (existingUser == null)
+                bool result = await _registryService.UpdateUserAsync(registrationInformation, cancellationToken);
+                if(result == true)
                 {
-                    return NotFound("User not found.");
+                    return Ok("User details updated");
                 }
-                registrationInformation.Id = id;
-                await _registryService.UpdateUserAsync(registrationInformation, cancellationToken);
-                return NoContent();
+                return BadRequest("User does not exist.");
             }
             catch(Exception ex)
             {
@@ -97,13 +99,12 @@ namespace Registry.API.Controllers
         {
             try
             {
-                var existingUser = await _registryService.GetUserAsync(id, cancellationToken);
-                if (existingUser == null)
+                bool result = await _registryService.DeleteUserAsync(id, cancellationToken);
+                if(result == true)
                 {
-                    return NotFound("User not found.");
+                    return Ok("User deleted");
                 }
-                await _registryService.DeleteUserAsync(id, cancellationToken);
-                return NoContent();
+                return BadRequest("User does not exist");
             }
             catch (Exception ex)
             {

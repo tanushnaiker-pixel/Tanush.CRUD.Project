@@ -18,15 +18,15 @@ BEGIN
 	CREATE TABLE [dbo].[Users]
 	(
 		[id] UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY
-		,[idNo] nchar(13) NOT NULL
-		,[firstName] nchar(50) NOT NULL
-		,[lastName] nchar(50) NOT NULL
-		,[email] nvarchar(50) NOT NULL
-		,[phone] nchar(50) NOT NULL
-		,[streetAddress] nchar(50) NOT NULL
-		,[suburb] nchar(50) NOT NULL
-		,[city] nchar(50) NOT NULL
-		,[province] nchar(50) NOT NULL
+		,[idNo] varchar(13) NOT NULL
+		,[firstName] varchar(50) NOT NULL
+		,[lastName] varchar(50) NOT NULL
+		,[email] varchar(50) NOT NULL
+		,[phone] varchar(15) NOT NULL
+		,[streetAddress] varchar(50) NOT NULL
+		,[suburb] varchar(50) NOT NULL
+		,[city] varchar(50) NOT NULL
+		,[province] varchar(15) NOT NULL
 	);
 END;
 GO
