@@ -41,9 +41,9 @@ namespace Registry.Infrastructure.Implementation
             return result;
         }
 
-        public async Task<List<RegistrationInformation>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<List<RegistrationInformation>?> GetAllAsync(CancellationToken cancellationToken)
         {
-            var result = await _dbContext.QueryAsync<RegistrationInformation>(ProcNames.GET_ALL_USERS, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken);
+            IEnumerable<RegistrationInformation>? result = await _dbContext.QueryAsync<RegistrationInformation>(ProcNames.GET_ALL_USERS, commandType: CommandType.StoredProcedure, cancellationToken: cancellationToken);
             return result?.ToList() ?? [];
         }
 
