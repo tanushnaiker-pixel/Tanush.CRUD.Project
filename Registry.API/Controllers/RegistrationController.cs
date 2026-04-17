@@ -23,12 +23,16 @@ namespace Registry.API.Controllers
             try
             {
                 var result = await _registryService.GetAllAsync(cancellationToken);
+                if(result == null)
+                {
+                    return NotFound("No users found.");
+                }
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving all users.");
-                return BadRequest("An error occurred");
+                return StatusCode(500, "An internal error occurred");
             }
         }
 
@@ -47,7 +51,7 @@ namespace Registry.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving the user.");
-                return BadRequest("An error occurred");
+                return StatusCode(500, "An internal error occurred");
             }
         }
 
@@ -62,7 +66,7 @@ namespace Registry.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while adding a new user.");
-                return BadRequest("An error occurred");
+                return StatusCode(500, "An internal error occurred");
             }
         }
 
@@ -83,7 +87,7 @@ namespace Registry.API.Controllers
             catch(Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the user.");
-                return BadRequest("An error occurred");
+                return StatusCode(500, "An internal error occurred");
             }
             
         }
@@ -104,7 +108,7 @@ namespace Registry.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while deleting the user.");
-                return BadRequest("An error occurred");
+                return StatusCode(500, "An internal error occurred");
             }
         }
     }

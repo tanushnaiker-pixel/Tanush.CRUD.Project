@@ -23,12 +23,12 @@ namespace Registry.Application.Implementation
             return await _registryRepository.DeleteUserAsync(id, cancellationToken);
         }
 
-        public Task<List<RegistrationInformation>> GetAllAsync(CancellationToken cancellationToken)
+        public Task<List<RegistrationInformation>?> GetAllAsync(CancellationToken cancellationToken)
         {
             return _registryRepository.GetAllAsync(cancellationToken);
         }
 
-        public Task<RegistrationInformation> GetUserAsync(Guid id, CancellationToken cancellationToken)
+        public Task<RegistrationInformation?> GetUserAsync(Guid id, CancellationToken cancellationToken)
         {
             return _registryRepository.GetUserAsync(id, cancellationToken);
         }
