@@ -5,7 +5,7 @@ using Registry.Core.Entities;
 namespace Registry.API.Controllers
 {
     [ApiController]
-    [Route("register")]
+    [Route("api/[controller]")]
     public class RegistrationController : ControllerBase
     {
         private readonly IRegistryService _registryService;
