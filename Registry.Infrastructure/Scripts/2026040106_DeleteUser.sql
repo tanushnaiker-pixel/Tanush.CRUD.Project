@@ -1,5 +1,4 @@
 SET ANSI_NULLS ON
-GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
@@ -9,10 +8,24 @@ GO
 -- =============================================
 CREATE PROCEDURE DeleteUser
 	@Id UNIQUEIDENTIFIER
+	,@ErrorCode INT NULL OUTPUT
 AS
 BEGIN
-	DELETE
-	FROM [dbo].[Users]
+	IF EXISTS
+	(
+	SELECT 1
+	FROM Users
 	WHERE [id] = @Id
+	)
+	BEGIN
+		DELETE
+		FROM [dbo].[Users]
+		WHERE [id] = @Id
+	END
+	ELSE
+	BEGIN
+		SET @ErrorCode = 100 -- User does not exist
+		RETURN
+	END
 END
 GO

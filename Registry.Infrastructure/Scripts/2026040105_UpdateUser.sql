@@ -1,5 +1,4 @@
 SET ANSI_NULLS ON
-GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
@@ -10,25 +9,40 @@ GO
 -- =============================================
 CREATE OR ALTER PROCEDURE UpdateUser
 	@Id UNIQUEIDENTIFIER
-	,@FirstName nchar(50)
-	,@LastName nchar(50)
-	,@Email nvarchar(50)
-	,@Phone nchar(10)
-	,@StreetAddress nchar(50)
-	,@Suburb nchar(50)
-	,@City nchar(50)
-	,@Province nchar(50)
+	,@IdNo varchar(13)
+	,@FirstName varchar(50)
+	,@LastName varchar(50)
+	,@Email varchar(50)
+	,@Phone varchar(15)
+	,@StreetAddress varchar(50)
+	,@Suburb varchar(50)
+	,@City varchar(50)
+	,@Province varchar(15)
+	,@ErrorCode INT NULL OUTPUT
 AS
 BEGIN
-	UPDATE [dbo].[Users]
-	SET [firstName] = @FirstName
-		,[lastName] = @LastName
-		,[email] = @Email
-		,[phone] = @Phone
-		,[streetAddress] = @StreetAddress
-		,[suburb] = @Suburb
-		,[city] = @City
-		,[province] = @Province
-	WHERE [id] = @Id
+	IF EXISTS
+	(
+	SELECT 1
+	FROM Users
+	WHERE [idNo] = @IdNo
+	)
+	BEGIN
+		UPDATE [dbo].[Users]
+		SET [firstName] = @FirstName
+			,[lastName] = @LastName
+			,[email] = @Email
+			,[phone] = @Phone
+			,[streetAddress] = @StreetAddress
+			,[suburb] = @Suburb
+			,[city] = @City
+			,[province] = @Province
+		WHERE [id] = @Id
+	END
+	ELSE
+	BEGIN
+		SET @ErrorCode = 100 -- User does not exist
+		RETURN
+	END
 END
 GO
