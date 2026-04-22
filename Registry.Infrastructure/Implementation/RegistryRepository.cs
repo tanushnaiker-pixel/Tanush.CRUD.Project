@@ -38,7 +38,7 @@ namespace Registry.Infrastructure.Implementation
             return result;
         }
 
-        public async Task<bool> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<bool> DeleteUserAsync(int id, CancellationToken cancellationToken)
         {
             DynamicParameters parameters = new();
             parameters.Add("@Id", id);
@@ -56,7 +56,7 @@ namespace Registry.Infrastructure.Implementation
             return result?.ToList() ?? [];
         }
 
-        public async Task<RegistrationInformation?> GetUserAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<RegistrationInformation?> GetUserAsync(int id, CancellationToken cancellationToken)
         {
             DynamicParameters parameters = new();
             parameters.Add("@Id", id);

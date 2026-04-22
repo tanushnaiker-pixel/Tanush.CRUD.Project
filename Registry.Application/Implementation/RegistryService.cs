@@ -18,7 +18,7 @@ namespace Registry.Application.Implementation
             return await _registryRepository.AddUserAsync(registrationInformation, cancellationToken);
         }
 
-        public async Task<bool> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<bool> DeleteUserAsync(int id, CancellationToken cancellationToken)
         {
             return await _registryRepository.DeleteUserAsync(id, cancellationToken);
         }
@@ -28,7 +28,7 @@ namespace Registry.Application.Implementation
             return _registryRepository.GetAllAsync(cancellationToken);
         }
 
-        public Task<RegistrationInformation?> GetUserAsync(Guid id, CancellationToken cancellationToken)
+        public Task<RegistrationInformation?> GetUserAsync(int id, CancellationToken cancellationToken)
         {
             return _registryRepository.GetUserAsync(id, cancellationToken);
         }

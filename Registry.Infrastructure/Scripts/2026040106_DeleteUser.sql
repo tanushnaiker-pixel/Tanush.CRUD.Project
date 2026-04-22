@@ -1,13 +1,16 @@
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
 -- =============================================
 -- Author:		Tanush Naiker
 -- Create date: 30/03/2026
 -- Description:	Deleting a User from the database
+--				only if the user existed
 -- =============================================
-CREATE PROCEDURE DeleteUser
-	@Id UNIQUEIDENTIFIER
+
+CREATE OR ALTER PROCEDURE DeleteUser
+	@Id INT
 	,@ErrorCode INT NULL OUTPUT
 AS
 BEGIN
