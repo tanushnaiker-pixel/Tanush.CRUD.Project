@@ -1,18 +1,34 @@
 SET ANSI_NULLS ON
-GO
 SET QUOTED_IDENTIFIER ON
 GO
+
 -- =============================================
 -- Author:		Tanush Naiker
 -- Create date: 30/03/2026
 -- Description:	Deleting a User from the database
+--				only if the user existed
 -- =============================================
-CREATE PROCEDURE DeleteUser
-	@Id UNIQUEIDENTIFIER
+
+CREATE OR ALTER PROCEDURE DeleteUser
+	@Id INT
+	,@ErrorCode INT NULL OUTPUT
 AS
 BEGIN
-	DELETE
-	FROM [dbo].[Users]
+	IF EXISTS
+	(
+	SELECT 1
+	FROM Users
 	WHERE [id] = @Id
+	)
+	BEGIN
+		DELETE
+		FROM [dbo].[Users]
+		WHERE [id] = @Id
+	END
+	ELSE
+	BEGIN
+		SET @ErrorCode = 100 -- User does not exist
+		RETURN
+	END
 END
 GO

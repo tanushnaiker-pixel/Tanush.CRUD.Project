@@ -1,10 +1,6 @@
 SET ANSI_NULLS ON
-GO
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE PROCEDURE GetAllUsers
-AS
 
 -- =============================================
 -- Author:		Tanush Naiker
@@ -13,6 +9,8 @@ AS
 --				for an account.
 -- =============================================
 
+CREATE OR ALTER PROCEDURE GetAllUsers
+AS
 BEGIN
 	SELECT * 
 	FROM [dbo].[Users] (NOLOCK)

@@ -1,34 +1,50 @@
 SET ANSI_NULLS ON
-GO
 SET QUOTED_IDENTIFIER ON
 GO
+
 -- =============================================
 -- Author:		Tanush Naiker
 -- Create date: 30/03/2026
 -- Description:	Updating a specific user's 
---				information
+--				information only if the user exists
 -- =============================================
+
 CREATE OR ALTER PROCEDURE UpdateUser
-	@Id UNIQUEIDENTIFIER
-	,@FirstName nchar(50)
-	,@LastName nchar(50)
-	,@Email nvarchar(50)
-	,@Phone nchar(10)
-	,@StreetAddress nchar(50)
-	,@Suburb nchar(50)
-	,@City nchar(50)
-	,@Province nchar(50)
+	@Id INT
+	,@IdNo VARCHAR(13)
+	,@FirstName VARCHAR(50)
+	,@LastName VARCHAR(50)
+	,@Email VARCHAR(50)
+	,@Phone VARCHAR(15)
+	,@StreetAddress VARCHAR(50)
+	,@Suburb VARCHAR(50)
+	,@City VARCHAR(50)
+	,@Province VARCHAR(15)
+	,@ErrorCode INT NULL OUTPUT
 AS
 BEGIN
-	UPDATE [dbo].[Users]
-	SET [firstName] = @FirstName
-		,[lastName] = @LastName
-		,[email] = @Email
-		,[phone] = @Phone
-		,[streetAddress] = @StreetAddress
-		,[suburb] = @Suburb
-		,[city] = @City
-		,[province] = @Province
-	WHERE [id] = @Id
+	IF EXISTS
+	(
+	SELECT 1
+	FROM Users
+	WHERE [idNo] = @IdNo
+	)
+	BEGIN
+		UPDATE [dbo].[Users]
+		SET [firstName] = @FirstName
+			,[lastName] = @LastName
+			,[email] = @Email
+			,[phone] = @Phone
+			,[streetAddress] = @StreetAddress
+			,[suburb] = @Suburb
+			,[city] = @City
+			,[province] = @Province
+		WHERE [id] = @Id
+	END
+	ELSE
+	BEGIN
+		SET @ErrorCode = 100 -- User does not exist
+		RETURN
+	END
 END
 GO

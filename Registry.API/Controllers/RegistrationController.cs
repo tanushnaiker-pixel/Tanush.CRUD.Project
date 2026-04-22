@@ -5,7 +5,7 @@ using Registry.Core.Entities;
 namespace Registry.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class RegistrationController : ControllerBase
     {
         private readonly IRegistryService _registryService;
@@ -37,7 +37,7 @@ namespace Registry.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<RegistrationInformation>> GetUserAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<RegistrationInformation>> GetUserAsync(int id, CancellationToken cancellationToken)
         {
             try
             {
@@ -60,8 +60,12 @@ namespace Registry.API.Controllers
         {
             try
             {
-                await _registryService.AddUserAsync(registrationInformation, cancellationToken);
-                return Ok();
+                bool result = await _registryService.AddUserAsync(registrationInformation, cancellationToken);
+                if (result == false)
+                {
+                    return BadRequest("User already exists.");
+                }
+                return Ok("User added successfully.");
             }
             catch (Exception ex)
             {
@@ -70,21 +74,19 @@ namespace Registry.API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUserAsync(Guid id, RegistrationInformation registrationInformation, CancellationToken cancellationToken)
+        [HttpPut]
+        public async Task<ActionResult> UpdateUserAsync(RegistrationInformation registrationInformation, CancellationToken cancellationToken)
         {
             try
             {
-                var existingUser = await _registryService.GetUserAsync(id, cancellationToken);
-                if (existingUser == null)
+                bool result = await _registryService.UpdateUserAsync(registrationInformation, cancellationToken);
+                if (result == false)
                 {
-                    return NotFound("User not found.");
+                    return BadRequest("User does not exist.");
                 }
-                registrationInformation.Id = id;
-                await _registryService.UpdateUserAsync(registrationInformation, cancellationToken);
-                return NoContent();
+                return Ok("User details updated");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the user.");
                 return StatusCode(500, "An internal error occurred");
@@ -93,17 +95,16 @@ namespace Registry.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUserAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult> DeleteUserAsync(int id, CancellationToken cancellationToken)
         {
             try
             {
-                var existingUser = await _registryService.GetUserAsync(id, cancellationToken);
-                if (existingUser == null)
+                bool result = await _registryService.DeleteUserAsync(id, cancellationToken);
+                if (result == false)
                 {
-                    return NotFound("User not found.");
+                    return BadRequest("User does not exist");
                 }
-                await _registryService.DeleteUserAsync(id, cancellationToken);
-                return NoContent();
+                return Ok("User deleted");
             }
             catch (Exception ex)
             {
