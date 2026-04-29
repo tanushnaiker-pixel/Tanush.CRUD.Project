@@ -13,7 +13,7 @@ CREATE OR ALTER PROCEDURE  GetUser
 	@Id INT
 AS
 BEGIN
-	SELECT *
+	SELECT [idNo], [firstName], [lastName], [email], [phone], [streetAddress], [suburb], [city], [province]
 	FROM [dbo].[Users] (NOLOCK)
 	WHERE [id] = @Id;
 END

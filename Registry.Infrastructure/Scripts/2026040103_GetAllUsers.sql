@@ -12,8 +12,7 @@ GO
 CREATE OR ALTER PROCEDURE GetAllUsers
 AS
 BEGIN
-	SELECT * 
+	SELECT [idNo], [firstName], [lastName], [email], [phone], [streetAddress], [suburb], [city], [province]
 	FROM [dbo].[Users] (NOLOCK)
-	-- Could add pagination with LIMIT = 10;
 END
 GO
